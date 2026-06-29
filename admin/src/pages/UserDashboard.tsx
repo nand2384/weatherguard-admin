@@ -120,7 +120,7 @@ export function UserDashboard() {
                   {weather.weather?.[0]?.icon && (
                     <div className="bg-blue-500/10 p-2 rounded-2xl border border-blue-500/20">
                       <img 
-                        src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} 
+                        src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} 
                         alt={weather.weather[0].description} 
                         className="w-20 h-20 drop-shadow-md"
                       />

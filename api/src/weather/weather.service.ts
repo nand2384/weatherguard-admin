@@ -35,7 +35,7 @@ export class WeatherService {
       throw new BadRequestException('OpenWeatherMap API key is not configured.');
     }
 
-    const url = new URL(`http://api.openweathermap.org/geo/1.0/direct`);
+    const url = new URL(`https://api.openweathermap.org/geo/1.0/direct`);
     url.searchParams.set('q', query);
     url.searchParams.set('limit', '5');
     url.searchParams.set('appid', apiKey);
