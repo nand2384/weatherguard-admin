@@ -1,7 +1,12 @@
 import { Module } from '@nestjs/common';
+
 import { SchedulerService } from './scheduler.service';
+import { TelegramModule } from '../telegram/telegram.module';
+import { UsersModule } from '../users/users.module';
+import { WeatherModule } from '../weather/weather.module';
 
 @Module({
-  providers: [SchedulerService]
+  imports: [UsersModule, WeatherModule, TelegramModule],
+  providers: [SchedulerService],
 })
 export class SchedulerModule {}
