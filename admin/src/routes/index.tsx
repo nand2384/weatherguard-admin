@@ -9,6 +9,7 @@ import { UserDashboard } from '../pages/UserDashboard';
 import { Waiting } from '../pages/Waiting';
 import { NotFound } from '../pages/NotFound';
 import { ProtectedRoute } from './ProtectedRoute';
+import { PublicRoute } from './PublicRoute';
 
 function RootRedirect() {
   const { user } = useAuth();
@@ -18,8 +19,10 @@ function RootRedirect() {
 export function AppRoutes() {
   return (
     <Routes>
-      <Route element={<AuthLayout />}>
-        <Route path="/login" element={<Login />} />
+      <Route element={<PublicRoute />}>
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+        </Route>
       </Route>
 
       <Route element={<ProtectedRoute />}>

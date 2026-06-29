@@ -43,7 +43,7 @@ export function ProtectedRoute() {
 
     // If approved user tries to visit onboarding pages, redirect them to dashboard
     if (['/complete-profile', '/waiting', '/rejected'].includes(location.pathname)) {
-      return <Navigate to="/dashboard" replace />;
+      return <Navigate to={user.role === 'ADMIN' ? '/admin' : '/dashboard'} replace />;
     }
   }
 
