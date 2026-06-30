@@ -2,7 +2,7 @@ import { Controller, Get, Post, Req, UseGuards, Body } from '@nestjs/common';
 import type { Request } from 'express';
 
 import { TelegramService } from './telegram.service';
-import { SessionAuthGuard } from '../common/guards/session-auth.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller('telegram')
 export class TelegramController {
@@ -11,19 +11,19 @@ export class TelegramController {
   ) {}
 
   @Get('connect')
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async connect(
     @Req() req: Request,
   ) {
     return this.telegramService.generateConnectionLink(
-      req.session.userId!,
+      req.user.id,
     );
   }
 
   @Post('test-message')
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async sendTestMessage(@Req() req: Request) {
-    return this.telegramService.sendTestMessage(req.session.userId!);
+    return this.telegramService.sendTestMessage(req.user.id);
   }
 
   @Post('webhook')
@@ -32,8 +32,8 @@ export class TelegramController {
   }
 
   @Post('weather-report')
-  @UseGuards(SessionAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async sendWeatherReport(@Req() req: Request) {
-    return this.telegramService.sendCurrentWeatherReport(req.session.userId!);
+    return this.telegramService.sendCurrentWeatherReport(req.user.id);
   }
 }

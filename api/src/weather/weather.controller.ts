@@ -1,12 +1,12 @@
 import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
 import type { Request } from 'express';
 
-import { SessionAuthGuard } from '../common/guards/session-auth.guard';
 import { UsersService } from '../users/users.service';
 import { WeatherService } from './weather.service';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller('weather')
-@UseGuards(SessionAuthGuard)
+@UseGuards(JwtAuthGuard)
 export class WeatherController {
   constructor(
     private readonly weatherService: WeatherService,
@@ -15,14 +15,14 @@ export class WeatherController {
 
   @Get('current')
   async getCurrentWeather(@Req() req: Request) {
-    const user = await this.usersService.findById(req.session.userId!);
+    const user = await this.usersService.findById(req.user.id);
 
     return this.weatherService.getCurrentWeatherForUser(user);
   }
 
   @Get('forecast')
   async getForecast(@Req() req: Request) {
-    const user = await this.usersService.findById(req.session.userId!);
+    const user = await this.usersService.findById(req.user.id);
 
     return this.weatherService.getForecastForUser(user);
   }

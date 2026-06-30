@@ -1,7 +1,1 @@
-import 'express-session';
-
-declare module 'express-session' {
-  interface SessionData {
-    userId?: string;
-  }
-}
+// DEPRECATED: express-session typings are no longer used.

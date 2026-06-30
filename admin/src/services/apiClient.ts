@@ -1,5 +1,17 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
+const getHeaders = (customHeaders?: Record<string, string>): Record<string, string> => {
+  const headers: Record<string, string> = {
+    'Accept': 'application/json',
+    ...customHeaders,
+  };
+  const token = localStorage.getItem('weatherguard_token');
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+};
+
 export class ApiError extends Error {
   status: number;
   constructor(status: number, message: string) {
@@ -38,10 +50,7 @@ export const fetchClient = {
   get: async <T>(endpoint: string): Promise<T> => {
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
-      credentials: 'include',
+      headers: getHeaders(),
     });
     return handleResponse<T>(response);
   },
@@ -49,11 +58,7 @@ export const fetchClient = {
   post: async <T>(endpoint: string, body?: any): Promise<T> => {
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
+      headers: getHeaders({ 'Content-Type': 'application/json' }),
       body: body ? JSON.stringify(body) : undefined,
     });
     return handleResponse<T>(response);
@@ -62,11 +67,7 @@ export const fetchClient = {
   patch: async <T>(endpoint: string, body: any): Promise<T> => {
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'PATCH',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
+      headers: getHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(body),
     });
     return handleResponse<T>(response);

@@ -6,25 +6,25 @@ import { RequestAccessDto } from './dto/request-access.dto';
 
 import { UsersService } from './users.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-import { SessionAuthGuard } from '../common/guards/session-auth.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller('users')
-@UseGuards(SessionAuthGuard)
+@UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('me')
   async me(@Req() req: Request) {
-    return this.usersService.findById(req.session.userId!);
+    return this.usersService.findById(req.user.id);
   }
 
   @Patch('profile')
   async updateProfile(@Req() req: Request, @Body() dto: UpdateProfileDto) {
-    return this.usersService.updateProfile(req.session.userId!, dto);
+    return this.usersService.updateProfile(req.user.id, dto);
   }
 
   @Post('request-access')
   async requestAccess(@Req() req: Request, @Body() dto: RequestAccessDto) {
-    return this.usersService.requestAccess(req.session.userId!, dto);
+    return this.usersService.requestAccess(req.user.id, dto);
   }
 }

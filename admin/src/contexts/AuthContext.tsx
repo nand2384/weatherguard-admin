@@ -28,6 +28,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+
+    if (token) {
+      localStorage.setItem('weatherguard_token', token);
+      params.delete('token');
+      const search = params.toString();
+      const newUrl = window.location.pathname + (search ? `?${search}` : '') + window.location.hash;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+
     fetchUser();
   }, []);
 
@@ -43,6 +54,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     void fetchClient.post('/auth/logout').finally(() => {
+      localStorage.removeItem('weatherguard_token');
       setUser(null);
     });
   };

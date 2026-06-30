@@ -16,7 +16,7 @@ export class AdminGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest<Request>();
-    const userId = request.session.userId;
+    const userId = request.user?.id;
 
     if (!userId) {
       throw new UnauthorizedException('Login required.');
