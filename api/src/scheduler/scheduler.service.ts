@@ -53,11 +53,29 @@ export class SchedulerService implements OnModuleInit {
                 ? alerts.filter((alert) => alert.severity === 'severe')
                 : alerts;
 
-            await Promise.all(
-              deliverableAlerts.map((alert) =>
-                this.telegramService.sendWeatherAlert(user.telegramChatId!, alert),
-              ),
-            );
+            if (deliverableAlerts.length > 0) {
+              await Promise.all(
+                deliverableAlerts.map((alert) =>
+                  this.telegramService.sendWeatherAlert(user.telegramChatId!, alert),
+                ),
+              );
+            } else if (user.alertFrequency !== AlertFrequency.SEVERE_ONLY) {
+              const temp = Math.round(weather.main?.temp);
+              const humidity = weather.main?.humidity;
+              const windSpeed = weather.wind?.speed;
+              const description = weather.weather?.[0]?.description || 'clear sky';
+
+              const reportMessage = `🌤 Current Weather Report for ${user.city}, ${user.country}:
+
+Temp: ${temp}°C
+Condition: ${description.charAt(0).toUpperCase() + description.slice(1)}
+Humidity: ${humidity}%
+Wind Speed: ${windSpeed} m/s
+
+Alerts will be sent dynamically based on your preferences.`;
+
+              await this.telegramService.sendMessage(user.telegramChatId!, reportMessage);
+            }
           } catch (error) {
             this.logger.error(
               `Failed to process weather alerts for user ${user.id}`,
