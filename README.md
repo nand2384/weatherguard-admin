@@ -225,6 +225,8 @@ The demonstration video covers:
 - Refresh Token authentication
 - Redis caching
 - GitHub OAuth support
+- Allow users to change their configurable location-based weather alerts
+- Add toggle to enable / disable weather alerts or pause it.
 
 ---
 
