@@ -39,14 +39,14 @@ async function bootstrap() {
       secret: configService.get<string>('SESSION_SECRET')!,
       resave: false,
       saveUninitialized: false,
-      proxy: isProduction,
+      proxy: true,
       store: MongoStore.create({
         mongoUrl: configService.get<string>('MONGODB_URI'),
       }),
       cookie: {
         httpOnly: true,
-        secure: isProduction,
-        sameSite: isProduction ? 'none' : 'lax',
+        secure: true,
+        sameSite: 'none',
         maxAge: 1000 * 60 * 60 * 24 * 7,
       },
     }),
