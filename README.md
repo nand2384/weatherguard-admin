@@ -208,8 +208,7 @@ The demonstration video covers:
 - Scheduled weather alert delivery
 
 **Video:**  
-> https://youtu.be/olXsyj2z0jo
-
+> https://www.loom.com/share/4ddaa2372b474c578f1765d2ad54b828
 ---
 
 # 🌐 Live Demo
