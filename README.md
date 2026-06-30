@@ -44,7 +44,7 @@ The project follows a decoupled client-server architecture:
 ```env
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/weatherguard
-SESSION_SECRET=your_super_secret_session_key
+JWT_SECRET=your_super_secret_session_key
 FRONTEND_URL=http://localhost:5173
 
 GOOGLE_CLIENT_ID=your_google_client_id

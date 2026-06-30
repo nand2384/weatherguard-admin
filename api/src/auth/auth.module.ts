@@ -6,6 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { GoogleStrategy } from './strategies/google.strategy';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 import { UsersModule } from '../users/users.module';
 
@@ -18,7 +19,7 @@ import { UsersModule } from '../users/users.module';
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('SESSION_SECRET') || 'defaultSecret',
+        secret: configService.get<string>('JWT_SECRET') || configService.get<string>('SESSION_SECRET') || 'defaultSecret',
         signOptions: { expiresIn: '7d' },
       }),
     }),
@@ -28,7 +29,11 @@ import { UsersModule } from '../users/users.module';
   providers: [
     AuthService,
     GoogleStrategy,
+    JwtAuthGuard,
   ],
-  exports: [JwtModule],
+  exports: [
+    JwtModule,
+    JwtAuthGuard,
+  ],
 })
 export class AuthModule {}
