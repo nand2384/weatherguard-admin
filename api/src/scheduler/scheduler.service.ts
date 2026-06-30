@@ -68,6 +68,59 @@ export class SchedulerService implements OnModuleInit {
     );
   }
 
+  async sendImmediateAlerts(user: any) {
+    if (
+      typeof user.latitude !== 'number' ||
+      typeof user.longitude !== 'number' ||
+      !user.telegramChatId
+    ) {
+      return;
+    }
+
+    try {
+      const weather = await this.weatherService.getCurrentWeather(
+        user.latitude,
+        user.longitude,
+      );
+      const alerts = this.alertEngineService.generateAlerts(weather);
+      const deliverableAlerts =
+        user.alertFrequency === AlertFrequency.SEVERE_ONLY
+          ? alerts.filter((alert) => alert.severity === 'severe')
+          : alerts;
+
+      if (deliverableAlerts.length > 0) {
+        await Promise.all(
+          deliverableAlerts.map((alert) =>
+            this.telegramService.sendWeatherAlert(user.telegramChatId!, alert),
+          ),
+        );
+        this.logger.log(`Sent ${deliverableAlerts.length} immediate weather alerts to newly approved user: ${user.id}`);
+      } else {
+        const temp = Math.round(weather.main?.temp);
+        const humidity = weather.main?.humidity;
+        const windSpeed = weather.wind?.speed;
+        const description = weather.weather?.[0]?.description || 'clear sky';
+
+        const reportMessage = `🌤 Current Weather Report for ${user.city}, ${user.country}:
+
+Temp: ${temp}°C
+Condition: ${description.charAt(0).toUpperCase() + description.slice(1)}
+Humidity: ${humidity}%
+Wind Speed: ${windSpeed} m/s
+
+Alerts will be sent dynamically based on your preferences.`;
+
+        await this.telegramService.sendMessage(user.telegramChatId, reportMessage);
+        this.logger.log(`No active alerts for newly approved user ${user.id}. Sent initial weather report.`);
+      }
+    } catch (error) {
+      this.logger.error(
+        `Failed to process immediate weather alerts for approved user ${user.id}`,
+        error instanceof Error ? error.stack : undefined,
+      );
+    }
+  }
+
   private shouldProcessUser(
     alertFrequency: AlertFrequency | undefined,
     currentHour: number,

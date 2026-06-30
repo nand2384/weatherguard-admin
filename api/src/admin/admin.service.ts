@@ -3,12 +3,14 @@ import { Injectable } from '@nestjs/common';
 import { ApprovalStatus } from '../common/enums/user.enum';
 import { TelegramService } from '../telegram/telegram.service';
 import { UsersService } from '../users/users.service';
+import { SchedulerService } from '../scheduler/scheduler.service';
 
 @Injectable()
 export class AdminService {
   constructor(
     private readonly usersService: UsersService,
     private readonly telegramService: TelegramService,
+    private readonly schedulerService: SchedulerService,
   ) {}
 
   async getStats() {
@@ -27,6 +29,9 @@ export class AdminService {
     const user = await this.usersService.approveUser(id);
 
     await this.telegramService.sendApprovalMessage(user);
+    
+    // Send immediate weather alert check results
+    await this.schedulerService.sendImmediateAlerts(user);
 
     return user;
   }

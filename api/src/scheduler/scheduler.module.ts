@@ -8,5 +8,6 @@ import { WeatherModule } from '../weather/weather.module';
 @Module({
   imports: [UsersModule, WeatherModule, TelegramModule],
   providers: [SchedulerService],
+  exports: [SchedulerService],
 })
 export class SchedulerModule {}

@@ -98,7 +98,12 @@ export function CompleteProfile() {
     try {
       const response = await fetchClient.get<{ url: string }>('/telegram/connect');
       if (response.url) {
-        window.open(response.url, '_blank');
+        // Try opening in a new tab first (great for desktop users)
+        const newWindow = window.open(response.url, '_blank');
+        // If popup was blocked or couldn't open (common on mobile phone browsers), redirect the current tab directly
+        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+          window.location.href = response.url;
+        }
       }
     } catch (e) {
       console.error(e);

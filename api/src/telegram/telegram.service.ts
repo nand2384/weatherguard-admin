@@ -164,7 +164,7 @@ Alerts will be sent dynamically based on your preferences.`;
     }
   }
 
-  private async sendMessage(chatId: string, message: string): Promise<boolean> {
+  public async sendMessage(chatId: string, message: string): Promise<boolean> {
     if (!this.bot) {
       return false;
     }
