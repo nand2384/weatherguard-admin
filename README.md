@@ -126,17 +126,19 @@ During each scheduled execution, the backend queries only users with `approvalSt
 
 # 💡 Design Decisions
 
-The project evolved beyond the minimum assessment requirements through several engineering decisions aimed at improving maintainability and deployment reliability.
+The project goes beyond the minimum assessment requirements by making several architectural decisions that improve maintainability, deployment reliability, and scalability.
 
 | Decision | Reason |
 |----------|--------|
-| **JWT Authentication** | Replaced server-side sessions after deployment because JWTs provide a more reliable solution for independently hosted frontend and backend applications. |
-| **Backend API Proxy** | Weather and geocoding requests are routed through the backend to prevent exposing API keys to the client. |
-| **Single User Collection** | Authentication, profile, approval status, and Telegram configuration are stored together to simplify authorization and scheduled processing. |
-| **Node-Cron** | Selected over BullMQ because periodic weather checks do not require distributed job queues. |
-| **Polling + Webhook Support** | Telegram integration supports polling during development and webhooks in production for easier deployment. |
-| **Azure Keep-Alive** | A lightweight `/health` endpoint is periodically invoked using cron-job.org to reduce idle shutdowns on the Azure Free tier. |
-| **Monorepo Structure** | Frontend (`/admin`) and backend (`/api`) are maintained in a single repository while remaining logically separated. |
+| **JWT Authentication** | Migrated from server-side sessions after deployment because JWTs provide a more reliable solution for independently hosted frontend and backend applications. |
+| **Backend API Proxy** | Weather and geocoding requests are routed through the backend to prevent exposing third-party API keys to the client. |
+| **Approval-Based Access Control** | Weather alerts are processed only for users whose `approvalStatus` is **APPROVED**, ensuring pending or rejected users never receive notifications. |
+| **Configurable Alert Frequency** | Users can choose how often they receive weather updates. The scheduler evaluates each user's configured interval before sending notifications, avoiding unnecessary alerts. |
+| **Location-Based Weather Alerts** | Instead of broadcasting a single weather update, alerts are generated using each user's saved city coordinates, providing personalized weather notifications. |
+| **Single User Collection** | Authentication, profile, approval status, Telegram configuration, and notification preferences are stored together to simplify authorization and scheduled processing. |
+| **Node-Cron Scheduling** | Node-Cron was selected over BullMQ because periodic weather checks do not require distributed job queues, keeping the solution lightweight and maintainable. |
+| **Polling + Webhook Support** | Telegram integration supports polling during development and webhooks in production, simplifying local development while following production best practices. |
+| **Monorepo Structure** | The React frontend (`/admin`) and NestJS backend (`/api`) are maintained in a single repository, simplifying version control, development, and deployment. |
 
 ---
 
@@ -206,17 +208,14 @@ The demonstration video covers:
 - Scheduled weather alert delivery
 
 **Video:**  
-> _Add your Loom or YouTube link here_
+> https://youtu.be/olXsyj2z0jo
 
 ---
 
 # 🌐 Live Demo
 
-**Frontend**  
-> https://your-vercel-app.vercel.app
-
-**Backend API**  
-> https://your-api.azurewebsites.net
+**URL**
+> https://weatherguard-admin-nu.vercel.app/
 
 ---
 
@@ -227,12 +226,6 @@ The demonstration video covers:
 - Refresh Token authentication
 - Redis caching
 - GitHub OAuth support
-
----
-
-# 📄 License
-
-This project is licensed under the MIT License.
 
 ---
 
