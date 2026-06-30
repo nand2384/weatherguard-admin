@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -9,6 +9,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
 
 import { UsersModule } from '../users/users.module';
 
+@Global()
 @Module({
   imports: [
     PassportModule.register({
