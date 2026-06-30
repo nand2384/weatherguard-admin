@@ -18,11 +18,17 @@ export class AuthController {
   async googleAuthCallback(@Req() req: Request, @Res() res: Response) {
     req.session.userId = (req.user as any).id;
 
+    console.log("=== CALLBACK ===");
+    console.log("Session ID:", req.session.id);
+    console.log("User ID:", req.session.userId);
+
     req.session.save((err) => {
       if (err) {
         throw err;
       }
 
+      console.log("Session saved");
+      
       res.redirect(this.configService.get<string>('FRONTEND_URL')!);
     });
   }
